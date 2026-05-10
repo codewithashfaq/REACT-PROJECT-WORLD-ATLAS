@@ -70,7 +70,6 @@ button {
   background: #202020;
   color: #fff;
   border-radius: 1.5rem;
-  /*thisdoesn'twork*/
   border-width: 0.1rem;
   border-style: solid;
   -webkit-border-radius: 1.5rem;
@@ -96,11 +95,15 @@ button:hover {
   gap: 1.5rem;
 }
 
-/* Layout  */
+/* ========================
+   Layout
+======================== */
 
 .container {
   max-width: 132rem;
   margin: auto;
+  /* padding added for small screens */
+  padding: 0 1.6rem;
 }
 
 .grid {
@@ -119,13 +122,19 @@ button:hover {
   grid-template-columns: repeat(4, 1fr);
 }
 
-/* Layout  */
+/* ========================
+   Header / Navbar
+======================== */
 
 header {
   height: 10rem;
   box-shadow: rgba(255, 255, 255, 0.3) 0px 10px 10px -10px;
   background-color: #202020;
   width: 100%;
+  /* Sticky fix */
+  position: sticky;
+  top: 0;
+  z-index: 100;
 
   & .container {
     height: 10rem;
@@ -142,7 +151,6 @@ header {
 nav ul {
   display: flex;
   justify-content: flex-end;
-  /* background-color: yellow; */
   gap: 3.2rem;
   color: #fff;
 
@@ -179,7 +187,42 @@ nav ul li a:hover::after {
   display: none;
 }
 
-/* media queries  */
+/* ========================
+   Scroll To Top Button
+======================== */
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 3rem;
+  right: 3rem;
+  background: linear-gradient(135deg, #3a4ed5, #25b09b);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 4.5rem;
+  height: 4.5rem;
+  font-size: 2rem;
+  cursor: pointer;
+  /* upar wale sab elements ke upar rahega */
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(58, 78, 213, 0.4);
+  transition: all 0.3s ease-in-out;
+  /* margin reset - global button margin override */
+  margin-top: 0;
+}
+
+.scroll-to-top:hover {
+  transform: translateY(-3px);
+}
+
+/* ========================
+   Media Queries — Tablet & Mobile
+======================== */
+
+/* Tablet: 998px tak */
 @media screen and (max-width: 998px) {
   .menu-web {
     display: none;
@@ -197,7 +240,8 @@ nav ul li a:hover::after {
     background-color: #0d1212;
     width: 100%;
     box-shadow: rgba(255, 252, 252, 0.25) 0px 14px 28px;
-    z-index: 1;
+    /* header ka z-index 100 hai — mobile menu uske upar hona chahiye */
+    z-index: 200;
   }
 
   .menu-mobile ul {
@@ -213,9 +257,117 @@ nav ul li a:hover::after {
       margin-bottom: 1.2rem;
     }
   }
+
+  /* Search + Filter stacked on tablet */
+  .section-searchFilter {
+    flex-direction: column;
+    gap: 1.6rem;
+    align-items: stretch;
+  }
 }
 
-/* hero section  */
+/* Mobile: 760px tak */
+@media screen and (max-width: 760px) {
+  /* Scroll to top button — thoda chhota mobile pe */
+  .scroll-to-top {
+    width: 3.8rem;
+    height: 3.8rem;
+    font-size: 1.6rem;
+    bottom: 2rem;
+    right: 2rem;
+  }
+
+  /* Section title — fixed size mobile pe cut hoti thi */
+  .container-title {
+    font-size: 2.8rem;
+    line-height: 4rem;
+    margin-bottom: 2.4rem;
+  }
+
+  /* Hero section margins kam karo mobile pe */
+  .hero-section .container {
+    margin: 4rem auto;
+    gap: 3.2rem;
+  }
+
+  /* About section margin */
+  .section-about {
+    margin: 0 auto 4rem auto;
+  }
+
+  /* Country section margin */
+  .country-section {
+    margin: 3.2rem auto 4.8rem auto;
+  }
+
+  /* Country details card */
+  .country-details-card {
+    margin: 3.2rem auto;
+  }
+
+  /* Card description ka max-width mobile pe hatao */
+  .card-description {
+    max-width: 100%;
+  }
+
+  /* Footer contacts — column mein stack karo mobile pe */
+  .footer-contact {
+    height: auto;
+    padding: 1.6rem 0;
+  }
+
+  /* Grid sab ek column mein */
+  .grid-four-cols,
+  .grid-three-cols,
+  .grid-two-cols {
+    grid-template-columns: 1fr;
+  }
+
+  /* Search filter mobile pe full width */
+  .section-searchFilter {
+    flex-direction: column;
+    gap: 1.2rem;
+
+    & input,
+    & button,
+    & select {
+      width: 100%;
+    }
+  }
+
+  /* Navbar padding kam karo mobile pe */
+  .navbar-grid {
+    padding: 0 1.6rem;
+  }
+
+  /* Contact form full width */
+  .contact-wrapper {
+    & form {
+      max-width: 100%;
+    }
+  }
+}
+
+/* Extra small: 480px tak */
+@media screen and (max-width: 480px) {
+  .container-title {
+    font-size: 2.4rem;
+    line-height: 3.4rem;
+  }
+
+  .heading-xl {
+    font-size: 3.6rem;
+  }
+
+  .container-card {
+    padding: 2.4rem;
+    border-radius: 2rem;
+  }
+}
+
+/* ========================
+   Hero Section
+======================== */
 
 .hero-section .container {
   padding: 3.2rem;
@@ -229,7 +381,7 @@ nav ul li a:hover::after {
 
 .heading-xl {
   font-family: inherit;
-  font-size: clamp(5.2rem, 6vw, 4.241rem);
+  font-size: clamp(3.6rem, 6vw, 5.2rem);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -1px;
@@ -265,7 +417,9 @@ nav ul li a:hover::after {
   transform: scale(1.05);
 }
 
-/* About Section  */
+/* ========================
+   About Section
+======================== */
 
 .section-about {
   margin: 0 auto 9rem auto;
@@ -373,13 +527,14 @@ nav ul li a:hover::after {
   max-width: 470px;
 }
 
-/* footer CSS  */
+/* ========================
+   Footer
+======================== */
 
 .footer-contact {
   height: 10rem;
   display: flex;
   gap: 2.4rem;
-  /* justify-content: flex-start; */
   align-items: center;
 
   & .icon {
@@ -423,6 +578,7 @@ ul {
   margin: 0px;
   padding: 0px;
 }
+
 .footer-section {
   background: #151414;
   position: relative;
@@ -432,36 +588,43 @@ ul {
   background: #202020;
   padding: 25px 0;
 }
+
 .copyright-text p {
   margin: 0;
   font-size: 14px;
   color: #878787;
 }
+
 .copyright-text p a {
   color: #3a4ed5;
   margin-left: 0.6rem;
 }
+
 .footer-menu li {
   display: inline-block;
   margin-left: 20px;
 }
+
 .footer-menu li:hover a {
   color: #3a4ed5;
 }
+
 .footer-menu li a {
   font-size: 14px;
   color: #878787;
 }
 
-/* --------------- 
-country Card 
------------------- */
+/* ========================
+   Country Cards
+======================== */
 
 .country-card {
   margin-top: 3.2rem;
 }
+
 .country-section {
   margin: 6.4rem auto 9.6rem auto;
+
   & .grid {
     gap: 3.2rem;
     max-width: 132rem;
@@ -477,7 +640,7 @@ country Card
   }
 }
 
-/* indivisual card container  */
+/* Individual Country Details Card */
 .country-details-card {
   max-width: 100%;
   margin: 6.4rem auto;
@@ -511,6 +674,10 @@ country Card
     justify-content: flex-end;
   }
 }
+
+/* ========================
+   Search & Filter
+======================== */
 
 .section-searchFilter {
   width: 100%;
@@ -587,9 +754,9 @@ country Card
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* ------------------ 
-contact us page 
---------------- */
+/* ========================
+   Contact Page
+======================== */
 
 .section-contact {
   margin: 9.6rem auto;
@@ -598,6 +765,7 @@ contact us page
     border-color: rgba(255, 255, 255, 0.6);
   }
 }
+
 .contact-wrapper {
   display: flex;
   justify-content: center;
@@ -627,9 +795,9 @@ contact us page
   }
 }
 
-/* ----------------
-contact us Page ends here 
---------------------- */
+/* ========================
+   Grid Responsive Breakpoints
+======================== */
 
 @media screen and (max-width: 1320px) {
   .grid-four-cols {
@@ -649,13 +817,11 @@ contact us Page ends here
   .grid-two-cols {
     grid-template-columns: 1fr;
   }
-
-  .grid--cols {
-    grid-template-columns: 1fr;
-  }
 }
 
-/* Loader  */
+/* ========================
+   Loader
+======================== */
 
 .loader {
   width: 50px;
@@ -670,6 +836,7 @@ contact us Page ends here
   mask-composite: subtract;
   animation: l3 1s infinite linear;
 }
+
 @keyframes l3 {
   to {
     transform: rotate(1turn);
