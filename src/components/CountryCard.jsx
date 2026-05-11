@@ -4,7 +4,7 @@ export const CountryCard = ({ country }) => {
   const { name, capital, region, population, flags } = country;
   return (
     <li className="country-card card">
-      <div className="container-card bg-while-box">
+      <div className="container-card bg-white-box">
         <img src={flags.svg} alt={flags.alt} />
 
         <div className="countryInfo">

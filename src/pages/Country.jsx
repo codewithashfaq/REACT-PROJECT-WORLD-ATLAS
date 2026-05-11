@@ -27,7 +27,6 @@ export const Country = () => {
   }, []);
 
   if (isPending) return <Loader />;
-  if (isPending) return <Loader />;
   if (error) return <p className="error">Failed to load countries: {error}</p>;
 
   const searchCountry = (country) => {
@@ -44,7 +43,7 @@ export const Country = () => {
     return country.region === filter;
   };
   const filterCountries = countries.filter(
-    (country) => searchCountry(country) && filterRegion(country)
+    (country) => searchCountry(country) && filterRegion(country),
   );
 
   return (

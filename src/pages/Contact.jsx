@@ -34,7 +34,7 @@ export const Contact = () => {
         >
           <input
             type="text"
-            name="username"
+            name="name"
             value={formData.name}
             onChange={handleChange}
             autoComplete="off"
