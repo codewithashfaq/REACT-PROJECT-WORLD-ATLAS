@@ -342,11 +342,6 @@ nav ul li a.active {
     max-width: 100%;
   }
 
-  .footer-contact {
-    height: auto;
-    padding: 1.6rem 0;
-  }
-
   /* Collapse all grid layouts to a single column */
   .grid-four-cols,
   .grid-three-cols,
@@ -740,6 +735,20 @@ ul {
   color: #878787;
   display: inline-block;
   padding: 0.4rem 0;
+}
+
+@media screen and (max-width: 760px) {
+  /* Footer contact items: left-align on mobile for readability */
+  .footer-contact {
+    height: auto;
+    justify-content: flex-start;
+    padding: 1.2rem 7.2rem;
+  }
+
+  /* Footer contact text: left-align text on mobile */
+  .footer-contact-text {
+    text-align: left;
+  }
 }
 
 /* ============================================================
