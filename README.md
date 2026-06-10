@@ -171,7 +171,7 @@ Base URL: `https://openrouter.ai/api/v1`
 
 ## Author
 
-**Ashfaq Khan** - Frontend Developer
+**Ashfaq Khan** - React Developer
 https://github.com/codewithashfaq | https://www.linkedin.com/in/ashfaaq-khan/
 
 ---
