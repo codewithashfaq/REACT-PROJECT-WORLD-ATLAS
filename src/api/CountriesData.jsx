@@ -1,4 +1,5 @@
 import axios from "axios";
+const API_KEY = import.meta.env.VITE_RESTCOUNTRIES_API_KEY;
 
 // ============================================================
 // API CLIENT — REST Countries
@@ -12,8 +13,11 @@ import axios from "axios";
 // hanging the UI forever.
 // ============================================================
 const api = axios.create({
-  baseURL: "https://restcountries.com/v3.1",
+  baseURL: "https://api.restcountries.com/countries/v5",
   timeout: 10000,
+  headers: {
+    Authorization: `Bearer ${API_KEY}`,
+  },
 });
 
 // ============================================================
@@ -30,10 +34,25 @@ const api = axios.create({
 // Returns: Axios response promise → response.data is an array
 // of country objects: { name, population, region, capital, flags }
 // ============================================================
-export const getCountriesData = () => {
-  return api.get("/all?fields=name,population,region,capital,flags");
-};
+export const getCountriesData = async () => {
+  const fields = "names,population,region,capitals,flag";
 
+  const page1 = await api.get("", {
+    params: { response_fields: fields, limit: 100, offset: 0 },
+  });
+  const page2 = await api.get("", {
+    params: { response_fields: fields, limit: 100, offset: 100 },
+  });
+  const page3 = await api.get("", {
+    params: { response_fields: fields, limit: 100, offset: 200 },
+  });
+
+  return [
+    ...page1.data.data.objects,
+    ...page2.data.data.objects,
+    ...page3.data.data.objects,
+  ];
+};
 // ============================================================
 // getCountryData
 //
@@ -55,7 +74,10 @@ export const getCountriesData = () => {
 // with one element; callers use response.data[0]
 // ============================================================
 export const getCountryData = (name) => {
-  return api.get(
-    `/name/${name}?fullText=true&fields=name,population,region,subregion,capital,tld,currencies,languages,borders,flags`,
-  );
+  return api.get(`/names.common/${encodeURIComponent(name)}`, {
+    params: {
+      response_fields:
+        "names,population,region,subregion,capitals,tlds,currencies,languages,borders,flag",
+    },
+  });
 };
