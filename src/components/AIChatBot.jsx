@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useLocation } from "react-router-dom";
 import { getAIResponse } from "../api/AskAi";
 import {
   FaRobot,
@@ -17,6 +16,7 @@ import {
   FaThumbsUp,
   FaThumbsDown,
 } from "react-icons/fa";
+import { useCountry } from "../context/CountryContext";
 
 // ---------------------------------------------------------------------------
 // inlineFormat — inline markdown: **bold**, *italic*, `code`
@@ -330,13 +330,27 @@ const TypingIndicator = () => (
 //   - Fully accessible (ARIA roles, keyboard nav)
 // ---------------------------------------------------------------------------
 export const AIChatBot = () => {
-  const location = useLocation();
   const MAX_CHARS = 300;
+
+  const { activeCountry } = useCountry();
 
   // Core UI state
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [messages, setMessages] = useState([]);
+
+  // Messages state — sessionStorage se load karo taaki refresh pe chat na jaaye
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem("worldatlas-chat");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // timestamps strings hain, Date objects banana padega
+        return parsed.map((m) => ({ ...m, timestamp: new Date(m.timestamp) }));
+      }
+    } catch {}
+    return null; // null = fresh start, welcome message dikhao
+  });
+
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(false);
@@ -349,44 +363,17 @@ export const AIChatBot = () => {
   );
   const recognitionRef = useRef(null);
 
-  // Country context (auto-populated from URL)
-  const [countryContext, setCountryContext] = useState(null);
-  const [isFetchingContext, setIsFetchingContext] = useState(false);
-
   // Refs
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
-  const prevCountrySlug = useRef(null);
+  // undefined = not initialized yet, null = no country, string = country name
+  const prevCountryName = useRef(undefined);
 
   // ---------------------------------------------------------------------------
-  // Effect: Auto-detect country from URL
-  // On /country/Mexico — fetches Mexico data and passes it as AI context.
-  // ---------------------------------------------------------------------------
-  useEffect(() => {
-    const parts = location.pathname.split("/");
-    const onCountryPage = parts[1] === "country" && parts[2];
-    const slug = onCountryPage ? decodeURIComponent(parts[2]) : null;
-
-    if (slug === prevCountrySlug.current) return;
-    prevCountrySlug.current = slug;
-
-    if (!slug) {
-      setCountryContext(null);
-      return;
-    }
-
-    setIsFetchingContext(true);
-    fetch(`https://restcountries.com/v3.1/name/${slug}?fullText=true`)
-      .then((res) => (res.ok ? res.json() : Promise.reject("Not found")))
-      .then((data) => setCountryContext(Array.isArray(data) ? data[0] : null))
-      .catch(() => setCountryContext(null))
-      .finally(() => setIsFetchingContext(false));
-  }, [location.pathname]);
-
-  // ---------------------------------------------------------------------------
-  // Effect: Welcome message on mount
+  // Effect: Welcome message on mount — sirf tab jab koi saved history nahi
   // ---------------------------------------------------------------------------
   useEffect(() => {
+    if (messages !== null) return; // history hai toh skip
     setMessages([
       {
         id: "welcome",
@@ -398,21 +385,55 @@ export const AIChatBot = () => {
   }, []);
 
   // ---------------------------------------------------------------------------
-  // Effect: Announce context switch when navigating to a new country page
+  // Effect: Messages change hone pe sessionStorage mein save karo
+  // Refresh pe chat history wapas milegi
   // ---------------------------------------------------------------------------
   useEffect(() => {
-    const name = countryContext?.name?.common;
-    if (!name) return;
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: `ctx-${Date.now()}`,
-        sender: "ai",
-        timestamp: new Date(),
-        text: `Now showing **${name}**. Ask me anything about this country! 🌟`,
-      },
-    ]);
-  }, [countryContext?.name?.common]);
+    if (messages === null) return;
+    try {
+      sessionStorage.setItem("worldatlas-chat", JSON.stringify(messages));
+    } catch (err) {
+      console.warn("Chat didn't save:", err);
+    }
+  }, [messages]);
+
+  // ---------------------------------------------------------------------------
+  // Effect: Announce context switch when navigating to a new country page
+  // prevCountryName ref se double fire aur mount pe fire hona band hota hai
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    if (messages === null) return; // welcome abhi load nahi hua, wait karo
+
+    const name = activeCountry?.names?.common ?? null;
+
+    // Mount pe pehli baar — sirf track karo, message mat dikhao
+    if (prevCountryName.current === undefined) {
+      prevCountryName.current = name;
+      return;
+    }
+
+    // Same country — skip
+    if (prevCountryName.current === name) return;
+    prevCountryName.current = name;
+
+    const newCtxMsg = {
+      id: `ctx-${Date.now()}`,
+      sender: "ai",
+      timestamp: new Date(),
+      text: name
+        ? `🌍 Now exploring **${name}**! Ask me anything about this country's culture, travel, food, or history.`
+        : `🌐 Back to explorer mode! Ask me about any country in the world.`,
+    };
+
+    setMessages((prev) => {
+      const lastMsg = prev[prev.length - 1];
+      const isLastCtx = lastMsg?.id?.startsWith("ctx-");
+      // Bar bar switch ho toh replace karo, stack mat karo
+      return isLastCtx
+        ? [...prev.slice(0, -1), newCtxMsg]
+        : [...prev, newCtxMsg];
+    });
+  }, [activeCountry?.names?.common, messages === null]);
 
   // Auto-scroll to the latest message whenever messages or loading state changes
   useEffect(() => {
@@ -421,10 +442,10 @@ export const AIChatBot = () => {
 
   // Increment unread badge when chat is closed and AI replies
   useEffect(() => {
-    if (isOpen || messages.length <= 1) return;
+    if (isOpen || !messages || messages.length <= 1) return;
     const last = messages[messages.length - 1];
     if (last.sender === "ai") setUnreadCount((n) => n + 1);
-  }, [messages]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [messages]);
 
   // ---------------------------------------------------------------------------
   // Handler: Open chat
@@ -449,13 +470,15 @@ export const AIChatBot = () => {
   // Handler: Clear conversation
   // ---------------------------------------------------------------------------
   const handleClearChat = () => {
+    // prevCountryName reset karo taaki next navigation pe context message aa sake
+    prevCountryName.current = activeCountry?.names?.common ?? null;
     setMessages([
       {
         id: `clear-${Date.now()}`,
         sender: "ai",
         timestamp: new Date(),
-        text: countryContext
-          ? `Chat cleared! Ask me anything about **${countryContext.name?.common}**. 🌍`
+        text: activeCountry
+          ? `Chat cleared! Ask me anything about **${activeCountry.names?.common}**. 🌍`
           : "Chat cleared! Ask me anything about world geography. 🌍",
       },
     ]);
@@ -554,7 +577,7 @@ export const AIChatBot = () => {
           content: m.text,
         }));
 
-      const response = await getAIResponse(text, countryContext, history);
+      const response = await getAIResponse(text, activeCountry, history);
       setMessages((prev) => [
         ...prev,
         {
@@ -577,7 +600,7 @@ export const AIChatBot = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [inputMessage, isLoading, countryContext, messages, stopListening]);
+  }, [inputMessage, isLoading, activeCountry, messages, stopListening]);
 
   // Send on Enter (Shift+Enter is reserved for future multi-line support)
   const handleKeyDown = (e) => {
@@ -607,7 +630,7 @@ export const AIChatBot = () => {
   };
 
   // Quick prompts adapt based on whether we have country context
-  const quickPrompts = countryContext
+  const quickPrompts = activeCountry
     ? [
         "Best time to visit?",
         "Famous foods?",
@@ -650,11 +673,6 @@ export const AIChatBot = () => {
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
-
-          {/* Pulse ring while country context is loading in background */}
-          {isFetchingContext && (
-            <span className="ai-context-pulse" aria-hidden="true" />
-          )}
         </button>
       )}
 
@@ -671,12 +689,12 @@ export const AIChatBot = () => {
             <div className="ai-chatbot-title">
               <FaRobot className="ai-icon" aria-hidden="true" />
               <span>World Atlas AI</span>
-              {countryContext && (
+              {activeCountry && (
                 <span
                   className="ai-context-badge"
-                  title={`Context: ${countryContext.name?.common}`}
+                  title={`Context: ${activeCountry.names?.common}`}
                 >
-                  {countryContext.name?.common}
+                  {activeCountry.names?.common}
                 </span>
               )}
             </div>
@@ -799,8 +817,8 @@ export const AIChatBot = () => {
                     placeholder={
                       isListening
                         ? "Listening..."
-                        : countryContext
-                          ? `Ask about ${countryContext.name?.common}...`
+                        : activeCountry
+                          ? `Ask about ${activeCountry.names?.common}...`
                           : "Ask about any country..."
                     }
                     disabled={isLoading}
