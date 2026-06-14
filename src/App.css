@@ -2129,3 +2129,13 @@ ol.ai-list li {
     max-width: 8rem;
   }
 }
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}

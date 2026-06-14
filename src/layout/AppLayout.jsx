@@ -33,7 +33,9 @@ export const AppLayout = () => {
       <Header />
 
       {/* Page content injected here by React Router */}
-      <Outlet />
+      <main style={{ flex: 1 }}>
+        <Outlet />
+      </main>
 
       {/* Site-wide footer */}
       <Footer />
