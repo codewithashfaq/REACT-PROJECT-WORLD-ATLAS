@@ -50,8 +50,8 @@ export const SearchFilter = ({
   const sortCountries = (value) => {
     const sortCountry = [...countries].sort((a, b) => {
       return value === "asc"
-        ? a.name.common.localeCompare(b.name.common)
-        : b.name.common.localeCompare(a.name.common);
+        ? a.names.common.localeCompare(b.names.common)
+        : b.names.common.localeCompare(a.names.common);
     });
 
     setCountries(sortCountry);

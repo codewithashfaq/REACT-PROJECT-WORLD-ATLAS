@@ -40,8 +40,15 @@ export const Country = () => {
   useEffect(() => {
     startTransition(async () => {
       try {
-        const res = await getCountriesData();
-        setCountries(res.data);
+        const cached = sessionStorage.getItem("countriesData");
+        if (cached) {
+          setCountries(JSON.parse(cached));
+          return;
+        }
+
+        const data = await getCountriesData();
+        sessionStorage.setItem("countriesData", JSON.stringify(data));
+        setCountries(data);
       } catch (err) {
         setError(err.message);
       }
@@ -60,7 +67,9 @@ export const Country = () => {
   // the search input is empty so the full list shows by default.
   const searchCountry = (country) => {
     if (search) {
-      return country.name.common.toLowerCase().includes(search.toLowerCase());
+      return country.names?.common
+        ?.toLowerCase()
+        .includes(search.toLowerCase());
     }
     return country;
   };
