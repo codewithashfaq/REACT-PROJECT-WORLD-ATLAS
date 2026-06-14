@@ -2,6 +2,7 @@ import { useEffect, useState, useTransition } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { getCountryData } from "../api/CountriesData";
 import { Loader } from "./Loader";
+import { useCountry } from "../context/CountryContext";
 
 // ============================================================
 // CountryDetails
@@ -25,10 +26,17 @@ export const CountryDetails = () => {
   // useParams pulls the country name out of the URL, e.g.
   // /country/Germany → prams.id === "Germany"
   const prams = useParams();
-  console.log(prams);
 
+  const { setActiveCountry } = useCountry();
   const [isPending, startTransition] = useTransition();
   const [country, setCountry] = useState();
+
+  // Go Back context reset
+  useEffect(() => {
+    return () => {
+      setActiveCountry(null);
+    };
+  }, []);
 
   // ── Data fetching ────────────────────────────────────────
   // Runs once on mount. Wrapping the async call in
@@ -37,20 +45,19 @@ export const CountryDetails = () => {
   useEffect(() => {
     startTransition(async () => {
       const res = await getCountryData(prams.id);
-      console.log(res);
 
       // Only update state on a successful response —
       // avoids rendering broken data on network errors.
       if (res.status === 200) {
-        setCountry(res.data[0]);
+        const data = res.data.data.objects[0];
+        setCountry(data);
+        setActiveCountry(data);
       }
     });
   }, []);
 
   // Show the spinner while the API call is still in flight
   if (isPending) return <Loader />;
-
-  console.log(country);
 
   return (
     <>
@@ -60,70 +67,104 @@ export const CountryDetails = () => {
           {country && (
             <div className="country-image grid grid-two-cols">
               {/* Country flag */}
-              <img
-                src={country.flags.svg}
-                alt={country.flags.alt}
-                className="flag"
-              />
+              {country.flag?.url_svg ? (
+                <img
+                  src={country.flag.url_svg}
+                  alt={country.names?.common}
+                  className="flag"
+                />
+              ) : (
+                <div
+                  style={{
+                    width: "100%",
+                    maxWidth: "30rem",
+                    height: "20rem",
+                    background: "rgba(255,255,255,0.05)",
+                    borderRadius: "1rem",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "1rem",
+                    justifySelf: "center",
+                  }}
+                >
+                  <span style={{ fontSize: "6rem" }}>🏳️</span>
+                  <span
+                    style={{
+                      fontSize: "1.4rem",
+                      color: "rgba(255,255,255,0.4)",
+                    }}
+                  >
+                    No flag available
+                  </span>
+                </div>
+              )}
 
               <div className="country-content">
                 {/* Official (legal) name, e.g. "Federal Republic of Germany" */}
-                <p className="card-title"> {country.name.official} </p>
+                <p className="card-title">{country.names?.official}</p>
 
                 <div className="infoContainer">
                   {/* nativeName is a keyed object ({ deu: { common, official } })
                       so we extract the values and join them into a readable string */}
                   <p>
-                    <span className="card-description"> Native Names: </span>
-                    {Object.keys(country.name.nativeName)
-                      .map((key) => country.name.nativeName[key].common)
-                      .join(", ")}
+                    <span className="card-description">Native Names: </span>
+                    {country.names?.native
+                      ? Object.values(country.names.native)
+                          .map((n) => n.common)
+                          .join(", ")
+                      : "N/A"}
                   </p>
 
                   {/* toLocaleString formats the number with thousand separators */}
                   <p>
-                    <span className="card-description"> Population: </span>
-                    {country.population.toLocaleString()}
+                    <span className="card-description">Population: </span>
+                    {country.population?.toLocaleString()}
                   </p>
 
                   <p>
-                    <span className="card-description"> Region: </span>
+                    <span className="card-description">Region: </span>
                     {country.region}
                   </p>
 
                   <p>
-                    <span className="card-description"> Sub Region: </span>
+                    <span className="card-description">Sub Region: </span>
                     {country.subregion}
                   </p>
 
                   {/* capital is an array; most countries have one primary capital */}
                   <p>
-                    <span className="card-description"> Capital: </span>
-                    {country.capital}
+                    <span className="card-description">Capital: </span>
+                    {country.capitals?.[0]?.name ?? "N/A"}
                   </p>
 
                   {/* tld (top-level domain) is an array, e.g. [".de"] — show the first */}
                   <p>
                     <span className="card-description">Top Level Domain: </span>
-                    {country.tld[0]}
+                    {country.tlds?.[0] ?? "N/A"}
                   </p>
 
                   {/* currencies is a keyed object ({ EUR: { name, symbol } })
                       so we extract just the name for each currency */}
                   <p>
-                    <span className="card-description"> Currencies: </span>
-                    {Object.keys(country.currencies)
-                      .map((key) => country.currencies[key].name)
-                      .join(", ")}
+                    <span className="card-description">Currencies: </span>
+                    {country.currencies
+                      ? Object.values(country.currencies)
+                          .map((c) => c.name)
+                          .join(", ")
+                      : "N/A"}
                   </p>
 
                   {/* languages is a keyed object ({ deu: "German" })
                       so we extract the values directly */}
                   <p>
                     <span className="card-description">Languages: </span>
-                    {Object.keys(country.languages)
-                      .map((key) => country.languages[key])
-                      .join(", ")}
+                    {country.languages
+                      ? Object.values(country.languages)
+                          .map((lang) => lang.name)
+                          .join(", ")
+                      : "N/A"}
                   </p>
                 </div>
               </div>
