@@ -3,7 +3,6 @@
    Removes default browser margin/padding and sets box-sizing
    so padding doesn't add to an element's declared width.
 ============================================================ */
-@import url("https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap");
 
 * {
   margin: 0;
@@ -632,6 +631,7 @@ nav ul li a.active {
 .footer-section {
   background: #151414;
   position: relative;
+  min-height: 20rem;
 }
 
 .footer-section > .container.grid-three-cols {
