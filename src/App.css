@@ -3,6 +3,7 @@
    Removes default browser margin/padding and sets box-sizing
    so padding doesn't add to an element's declared width.
 ============================================================ */
+@import url("https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap");
 
 * {
   margin: 0;
@@ -16,7 +17,7 @@
 
 html {
   font-size: 62.5%; /* 1rem = 10px (makes rem math easy: 1.6rem = 16px) */
-  font-family: "urbanist";
+  font-family: "Urbanist", sans-serif;
   scroll-behavior: smooth;
 }
 
@@ -474,6 +475,9 @@ nav ul li a.active {
 
 .container .banner-image {
   width: 100%;
+  height: auto;
+  max-width: 500px;
+  object-fit: contain;
   border-radius: 0.5rem;
   transition: transform 0.4s ease-in-out;
 }
@@ -485,8 +489,9 @@ nav ul li a.active {
   }
 
   .container .banner-image {
-    width: 80%;
-    order: 0;
+    width: 90%;
+    height: auto;
+    object-fit: contain;
     border-radius: 0.5rem;
     transition: transform 0.4s ease-in-out;
   }

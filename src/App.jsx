@@ -1,11 +1,23 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AppLayout } from "./layout/AppLayout";
 import { Home } from "./pages/Home";
-import { About } from "./pages/About";
-import { Country } from "./pages/Country";
-import { Contact } from "./pages/Contact";
 import { ErrorPage } from "./pages/ErrorPage";
-import { CountryDetails } from "./components/CountryDetails";
+import { lazy, Suspense } from "react";
+import { Loader } from "./components/Loader";
+const Country = lazy(() =>
+  import("./pages/Country").then((m) => ({ default: m.Country })),
+);
+const CountryDetails = lazy(() =>
+  import("./components/CountryDetails").then((m) => ({
+    default: m.CountryDetails,
+  })),
+);
+const About = lazy(() =>
+  import("./pages/About").then((m) => ({ default: m.About })),
+);
+const Contact = lazy(() =>
+  import("./pages/Contact").then((m) => ({ default: m.Contact })),
+);
 
 // ============================================================
 // Router Configuration
@@ -46,22 +58,38 @@ const router = createBrowserRouter([
       },
       {
         path: "about",
-        element: <About />,
+        element: (
+          <Suspense fallback={<Loader />}>
+            <About />
+          </Suspense>
+        ),
       },
       {
         // Listing page — shows all countries with search / filter
         path: "country",
-        element: <Country />,
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Country />
+          </Suspense>
+        ),
       },
       {
         // Detail page — :id is the country's common name from the URL,
         // e.g. /country/Germany → id === "Germany"
         path: "country/:id",
-        element: <CountryDetails />,
+        element: (
+          <Suspense fallback={<Loader />}>
+            <CountryDetails />
+          </Suspense>
+        ),
       },
       {
         path: "contact",
-        element: <Contact />,
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Contact />
+          </Suspense>
+        ),
       },
     ],
   },

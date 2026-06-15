@@ -47,7 +47,9 @@ export const HeroSection = () => {
           <img
             src="/images/world.webp"
             className="banner-image"
-            fetchpriority="high"
+            fetchPriority="high"
+            width="500"
+            height="500"
             alt="world atlas banner"
           />
         </div>
