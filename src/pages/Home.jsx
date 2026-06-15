@@ -18,12 +18,12 @@ import { About } from "./About";
 // ============================================================
 export const Home = () => {
   return (
-    <main>
+    <div>
       {/* Landing banner with headline, description, and CTA button */}
       <HeroSection />
 
       {/* Interesting country facts section */}
       <About />
-    </main>
+    </div>
   );
 };

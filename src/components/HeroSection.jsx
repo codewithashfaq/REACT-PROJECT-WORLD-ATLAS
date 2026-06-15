@@ -16,7 +16,7 @@ import { FaLongArrowAltRight } from "react-icons/fa";
 // ============================================================
 export const HeroSection = () => {
   return (
-    <main className="hero-section main">
+    <section className="hero-section main">
       <div className="container grid grid-two-cols">
         {/* ── Left column: headline, description, CTA ── */}
         <div className="hero-content">
@@ -54,6 +54,6 @@ export const HeroSection = () => {
           />
         </div>
       </div>
-    </main>
+    </section>
   );
 };

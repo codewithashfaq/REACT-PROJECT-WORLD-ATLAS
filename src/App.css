@@ -107,6 +107,14 @@ button:hover {
   gap: 1.5rem;
 }
 
+.ham-menu button {
+  margin-top: 0;
+}
+
+.logo h1 {
+  margin-bottom: 0;
+}
+
 /* ============================================================
    LAYOUT UTILITIES
    Container: centers content and caps max width.
@@ -156,16 +164,22 @@ header {
 }
 
 .navbar-grid {
-  grid-template-columns: 0.5fr 1fr;
+  grid-template-columns: auto 1fr;
   align-items: center;
   height: 10rem;
   padding: 0 3.2rem;
 }
 
+.nav-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 nav ul {
   display: flex;
   justify-content: flex-end;
-  gap: 3.2rem;
+  gap: 3.6rem;
   color: #fff;
 
   & li a {
@@ -186,7 +200,7 @@ nav ul li a {
 nav ul li a::after {
   content: "";
   position: absolute;
-  bottom: -5px;
+  bottom: 3px;
   left: 0;
   width: 0%;
   height: 2px;
@@ -251,197 +265,6 @@ nav ul li a.active {
 }
 
 /* ============================================================
-   MEDIA QUERIES — Tablet (≤998px)
-   Hides the desktop nav and shows the hamburger menu instead.
-   The mobile menu drops down as an absolute overlay below the header.
-============================================================ */
-
-@media screen and (max-width: 998px) {
-  .menu-web {
-    display: none;
-  }
-
-  .ham-menu {
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .menu-mobile {
-    position: absolute;
-    top: 10rem;
-    left: 0;
-    background-color: #0d1212;
-    width: 100%;
-    box-shadow: rgba(255, 252, 252, 0.25) 0px 14px 28px;
-    z-index: 200;
-  }
-
-  .menu-mobile ul {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    & li:first-child {
-      margin-top: 1.2rem;
-    }
-
-    & li:last-child {
-      margin-bottom: 1.2rem;
-    }
-  }
-
-  .section-searchFilter {
-    flex-direction: column;
-    gap: 1.6rem;
-    align-items: stretch;
-  }
-}
-
-/* ============================================================
-   MEDIA QUERIES — Small Tablet / Large Mobile (≤760px)
-   Collapses all multi-column grids to single column.
-   Scroll-to-top stays bottom-right but shrinks slightly.
-============================================================ */
-
-@media screen and (max-width: 760px) {
-  /* Scroll-to-top: shrink on smaller screens, stays bottom-right */
-
-  .scroll-to-top {
-    width: 4.8rem;
-    height: 4.8rem;
-    font-size: 2rem;
-    bottom: 2rem;
-    right: 1.6rem;
-  }
-
-  .container-title {
-    font-size: 2.8rem;
-    line-height: 4rem;
-    margin-bottom: 2.4rem;
-  }
-
-  .hero-section .container {
-    margin: 4rem auto;
-    gap: 3.2rem;
-  }
-
-  .section-about {
-    margin: 0 auto 4rem auto;
-    padding-top: 2.4rem;
-  }
-
-  .country-section {
-    margin: 3.2rem auto 4.8rem auto;
-  }
-
-  .country-details-card {
-    margin: 3.2rem auto;
-  }
-
-  .card-description {
-    max-width: 100%;
-  }
-
-  /* Collapse all grid layouts to a single column */
-  .grid-four-cols,
-  .grid-three-cols,
-  .grid-two-cols {
-    grid-template-columns: 1fr;
-  }
-
-  .section-searchFilter {
-    flex-direction: column;
-    gap: 1.2rem;
-
-    & input,
-    & button,
-    & select {
-      width: 100%;
-    }
-  }
-
-  .navbar-grid {
-    padding: 0 1.6rem;
-  }
-
-  .contact-wrapper {
-    & form {
-      max-width: 100%;
-    }
-  }
-
-  .copyright-area .grid-two-cols {
-    grid-template-columns: 1fr;
-    gap: 1.2rem;
-    text-align: center;
-  }
-
-  .copyright-text p {
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .footer-menu ul {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1.2rem;
-  }
-
-  .footer-menu li {
-    margin-left: 0;
-  }
-
-  .country-section .grid > * {
-    flex-basis: 100%;
-  }
-
-  .country-section .container-card {
-    min-height: auto;
-  }
-}
-
-/* ============================================================
-   MEDIA QUERIES — Mobile (≤480px)
-   Scroll-to-top moves to BOTTOM-LEFT so it doesn't clash
-   with the AI chatbot button that lives in the bottom-right.
-   This is the split-corner pattern — each button owns a corner.
-============================================================ */
-
-@media screen and (max-width: 600px) {
-  .scroll-to-top {
-    bottom: 1.5rem;
-    left: 1.5rem;
-    right: auto;
-    width: 4.8rem;
-    height: 4.8rem;
-    font-size: 2rem;
-  }
-
-  .container-title {
-    font-size: 2.4rem;
-    line-height: 3.4rem;
-  }
-
-  .heading-xl {
-    font-size: 3.6rem;
-  }
-
-  .container-card {
-    padding: 2.4rem;
-    border-radius: 2rem;
-  }
-
-  .copyright-text p {
-    font-size: 1.3rem;
-    line-height: 1.8;
-  }
-
-  .footer-menu li a {
-    font-size: 1.3rem;
-  }
-}
-
-/* ============================================================
    HERO SECTION
    Full-width two-column layout with large heading and banner
    image. On screens below 990px the image stacks above the text.
@@ -479,21 +302,6 @@ nav ul li a.active {
   object-fit: contain;
   border-radius: 0.5rem;
   transition: transform 0.4s ease-in-out;
-}
-
-@media screen and (max-width: 990px) {
-  /* Image moves to the top, content moves below on narrow screens */
-  .hero-content {
-    order: 1;
-  }
-
-  .container .banner-image {
-    width: 90%;
-    height: auto;
-    object-fit: contain;
-    border-radius: 0.5rem;
-    transition: transform 0.4s ease-in-out;
-  }
 }
 
 /* Subtle zoom on hover for country and hero images */
@@ -956,7 +764,7 @@ ul {
 ============================================================ */
 
 .section-contact {
-  margin: 9.6rem auto;
+  margin: 0.6rem auto;
 
   & hr {
     border-color: rgba(255, 255, 255, 0.6);
@@ -1133,6 +941,7 @@ ul {
   .section-about .gradient-cards,
   .country-section .grid {
     flex-direction: column;
+    padding: 1.6rem;
   }
 
   .section-about .gradient-cards > .card,
@@ -2141,6 +1950,213 @@ ol.ai-list li {
   flex-direction: column;
 }
 
-main {
+.page-content {
   flex: 1;
+}
+
+@media screen and (max-width: 990px) {
+  /* Image moves to the top, content moves below on narrow screens */
+  .hero-content {
+    order: 1;
+  }
+
+  .container .banner-image {
+    width: 90%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 0.5rem;
+    transition: transform 0.4s ease-in-out;
+  }
+}
+
+/* ============================================================
+   MEDIA QUERIES — Tablet (≤998px)
+   Hides the desktop nav and shows the hamburger menu instead.
+   The mobile menu drops down as an absolute overlay below the header.
+============================================================ */
+
+@media screen and (max-width: 998px) {
+  .menu-web {
+    display: none;
+  }
+
+  .ham-menu {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .menu-mobile {
+    position: absolute;
+    top: 10rem;
+    left: 0;
+    background-color: #0d1212;
+    width: 100%;
+    box-shadow: rgba(255, 252, 252, 0.25) 0px 14px 28px;
+    z-index: 200;
+  }
+
+  .menu-mobile ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+
+    & li:first-child {
+      margin-top: 1.2rem;
+    }
+
+    & li:last-child {
+      margin-bottom: 1.2rem;
+    }
+  }
+
+  .section-searchFilter {
+    flex-direction: column;
+    gap: 1.6rem;
+    align-items: center;
+  }
+}
+
+/* ============================================================
+   MEDIA QUERIES — Small Tablet / Large Mobile (≤760px)
+   Collapses all multi-column grids to single column.
+   Scroll-to-top stays bottom-right but shrinks slightly.
+============================================================ */
+
+@media screen and (max-width: 760px) {
+  /* Scroll-to-top: shrink on smaller screens, stays bottom-right */
+
+  .scroll-to-top {
+    width: 4.8rem;
+    height: 4.8rem;
+    font-size: 2rem;
+    bottom: 2rem;
+    right: 1.6rem;
+  }
+
+  .container-title {
+    font-size: 2.8rem;
+    line-height: 4rem;
+    margin-bottom: 2.4rem;
+  }
+
+  .hero-section .container {
+    margin: 0 auto;
+    gap: 3.2rem;
+  }
+
+  .section-about {
+    margin: 0 auto 4rem auto;
+    padding-top: 2.4rem;
+  }
+
+  .country-section {
+    margin: 3.2rem auto 4.8rem auto;
+  }
+
+  .country-details-card {
+    margin: 3.2rem auto;
+  }
+
+  .card-description {
+    max-width: 100%;
+  }
+
+  /* Collapse all grid layouts to a single column */
+  /* .grid-four-cols,
+  .grid-three-cols,
+  .grid-two-cols {
+    grid-template-columns: 1fr;
+  } */
+
+  .section-searchFilter {
+    flex-direction: column;
+    gap: 1.2rem;
+
+    & input,
+    & button,
+    & select {
+      width: 100%;
+    }
+  }
+
+  .navbar-grid {
+    padding: 0 1.6rem;
+  }
+
+  .contact-wrapper {
+    & form {
+      max-width: 100%;
+    }
+  }
+
+  .copyright-area .grid-two-cols {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    text-align: center;
+  }
+
+  .copyright-text p {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .footer-menu ul {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+  }
+
+  .footer-menu li {
+    margin-left: 0;
+  }
+
+  .country-section .grid > * {
+    flex-basis: 100%;
+  }
+
+  .country-section .container-card {
+    min-height: auto;
+  }
+}
+
+/* ============================================================
+   MEDIA QUERIES — Mobile (≤480px)
+   Scroll-to-top moves to BOTTOM-LEFT so it doesn't clash
+   with the AI chatbot button that lives in the bottom-right.
+   This is the split-corner pattern — each button owns a corner.
+============================================================ */
+
+@media screen and (max-width: 600px) {
+  .scroll-to-top {
+    bottom: 1.5rem;
+    left: 1.5rem;
+    right: auto;
+    width: 4.8rem;
+    height: 4.8rem;
+    font-size: 2rem;
+  }
+
+  .container-title {
+    font-size: 2.4rem;
+    line-height: 3.4rem;
+  }
+
+  .heading-xl {
+    font-size: 3.6rem;
+  }
+
+  .container-card {
+    padding: 2.4rem;
+    border-radius: 2rem;
+  }
+
+  .copyright-text p {
+    font-size: 1.3rem;
+    line-height: 1.8;
+  }
+
+  .footer-menu li a {
+    font-size: 1.3rem;
+  }
 }

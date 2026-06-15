@@ -49,66 +49,72 @@ export const Header = () => {
             </NavLink>
           </div>
 
-          {/* ── Navigation ──────────────────────────────────
-              CSS class swaps between "menu-web" (horizontal,
-              desktop) and "menu-mobile" (dropdown, mobile)
-              based on the showMenu state.
-              NavLink's className callback adds the "active"
-              class automatically when the route matches,
-              which triggers the underline animation in CSS.  */}
-          <nav className={showMenu ? "menu-mobile" : "menu-web"}>
-            <ul>
-              <li>
-                <NavLink
-                  to={"/"}
-                  className={({ isActive }) => (isActive ? "active" : "")}
-                  onClick={handleNavClick}
-                >
-                  Home
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to={"/about"}
-                  className={({ isActive }) => (isActive ? "active" : "")}
-                  onClick={handleNavClick}
-                >
-                  About
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to={"/country"}
-                  className={({ isActive }) => (isActive ? "active" : "")}
-                  onClick={handleNavClick}
-                >
-                  Country
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to={"/contact"}
-                  className={({ isActive }) => (isActive ? "active" : "")}
-                  onClick={handleNavClick}
-                >
-                  Contact
-                </NavLink>
-              </li>
-            </ul>
-          </nav>
+          {/* ── Nav wrapper — groups nav links and hamburger
+              into a single grid cell so navbar-grid stays
+              a clean 2-column layout (logo | nav-wrapper).  */}
+          <div className="nav-wrapper">
+            {/* ── Navigation ──────────────────────────────────
+                CSS class swaps between "menu-web" (horizontal,
+                desktop) and "menu-mobile" (dropdown, mobile)
+                based on the showMenu state.
+                NavLink's className callback adds the "active"
+                class automatically when the route matches,
+                which triggers the underline animation in CSS.  */}
+            <nav className={showMenu ? "menu-mobile" : "menu-web"}>
+              <ul>
+                <li>
+                  <NavLink
+                    to={"/"}
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                    onClick={handleNavClick}
+                  >
+                    Home
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to={"/about"}
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                    onClick={handleNavClick}
+                  >
+                    About
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to={"/country"}
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                    onClick={handleNavClick}
+                  >
+                    Country
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to={"/contact"}
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                    onClick={handleNavClick}
+                  >
+                    Contact
+                  </NavLink>
+                </li>
+              </ul>
+            </nav>
 
-          {/* ── Hamburger button ────────────────────────────
-              Only visible on tablet/mobile (CSS hides it on
-              desktop). aria-expanded tells screen readers
-              whether the dropdown is currently open.         */}
-          <div className="ham-menu">
-            <button
-              onClick={handleButtonToggle}
-              aria-label="Toggle menu"
-              aria-expanded={showMenu}
-            >
-              <GiHamburgerMenu />
-            </button>
+            {/* ── Hamburger button ────────────────────────────
+                Only visible on tablet/mobile (CSS hides it on
+                desktop). aria-expanded tells screen readers
+                whether the dropdown is currently open.         */}
+            <div className="ham-menu">
+              <button
+                onClick={handleButtonToggle}
+                aria-label="Toggle menu"
+                aria-expanded={showMenu}
+                className="ham-menu-btn"
+              >
+                <GiHamburgerMenu />
+              </button>
+            </div>
           </div>
         </div>
       </div>
