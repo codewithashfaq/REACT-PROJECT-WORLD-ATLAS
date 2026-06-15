@@ -44,7 +44,12 @@ export const HeroSection = () => {
 
         {/* ── Right column: decorative world map image ── */}
         <div className="hero-image">
-          <img src="/images/world.png" alt="World" className="banner-image" />
+          <img
+            src="/images/world.webp"
+            className="banner-image"
+            fetchpriority="high"
+            alt="world atlas banner"
+          />
         </div>
       </div>
     </main>
